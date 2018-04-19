@@ -1,12 +1,11 @@
 # annotation-generator
 ## Compilation
-'''console
+```sh
 mvn clean
 mvn package
-'''
+```
 ## Running
-'''console
-java -cp \{jar file in the folder target\} com.deeplearning.app.App
-'''
+```sh
+java -cp {jar file in the folder target} com.deeplearning.app.App
+```
 Run the jar in the parent forlder where you have you have your walk folders
-
