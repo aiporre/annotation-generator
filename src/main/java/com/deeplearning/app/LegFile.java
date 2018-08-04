@@ -64,8 +64,12 @@ public class LegFile {
 		return new File(this.fileName).exists();
 	}
 
+    public String getFileNameParent() {
+        return new File(this.fileName).getParent();
+    }
 
-	private final class CSVParser {
+
+    private final class CSVParser {
 		private BufferedReader br;
         private String line;
         private String cvsSplitBy;

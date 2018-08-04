@@ -2,21 +2,20 @@ package com.deeplearning.app;
 
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ManyWalkFolder implements WalkFolder {
+
+public class SimpleWalkFolder implements WalkFolder {
     // private String folderName;
     private LegFile  legFileLeft;
     private LegFile  legFileRight;
-    private String identifier;
 
-    public ManyWalkFolder(String leftFileName, String rightFileName) {
-        String[] fileName = leftFileName.substring(leftFileName.lastIndexOf(File.separator)+1).split("-");
-        this.identifier = fileName[0] + "-" + fileName[1] + "-manual-" + fileName[2];
-        this.legFileLeft = new LegFile(leftFileName);
-        this.legFileRight = new LegFile(rightFileName);
+    public SimpleWalkFolder(String folderName){
+        this.legFileLeft = new LegFile(folderName + "/left.csv");
+        this.legFileRight = new LegFile(folderName + "/right.csv");
     }
 
     @Override
@@ -83,6 +82,7 @@ public class ManyWalkFolder implements WalkFolder {
 
     @Override
     public String getIdentifier() {
-        return this.identifier;
+        String parentPath = this.legFileLeft.getFileNameParent();
+        return parentPath.substring(parentPath.lastIndexOf(File.separator)+1);
     }
 }

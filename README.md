@@ -1,4 +1,7 @@
 # annotation-generator
+## Enviroment
+jdk 8
+maven
 ## Compilation
 ```sh
 mvn clean

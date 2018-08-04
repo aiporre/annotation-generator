@@ -12,7 +12,6 @@ import javax.swing.table.DefaultTableModel;
 // import java.io.FileReader;
 // import java.io.IOException;
 
-import java.util.List;
 import java.util.Map;
 import java.io.IOException;
 // import java.util.ArrayList;
@@ -25,10 +24,7 @@ import java.lang.Integer;
 
 import org.jopendocument.dom.OOUtils; 
 import org.jopendocument.dom.spreadsheet.Sheet; 
-import org.jopendocument.dom.spreadsheet.SpreadSheet; 
-
-import com.deeplearning.app.AnnotationPair;
-import com.deeplearning.app.WalkFolder;
+import org.jopendocument.dom.spreadsheet.SpreadSheet;
 
 public class AnnotationGen {
 	private final File file;
@@ -70,7 +66,7 @@ public class AnnotationGen {
             	final Sheet sheet = spreadSheet.addSheet(walkFolderId);
 
             	// allocate fields in the sheet
-            	sheet.setRowCount(walkFolder.sampleNumber()+1);
+            	sheet.setRowCount(walkFolder.annotationsNumber()+1);
             	sheet.setColumnCount(3);
 
             	for(String coordinate: coodinatesMap.keySet()){

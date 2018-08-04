@@ -4,34 +4,17 @@ package com.deeplearning.app;
 
 import java.io.File; 
 import java.io.FileFilter;
-// import javax.swing.table.TableModel;
-
-// import java.io.BufferedReader;
-// import java.io.FileNotFoundException;
-// import java.io.FileReader;
-// import java.io.IOException;
 
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 
 import java.util.ArrayList;
-
-// import java.util.Map.Entry;
-// import java.util.AbstractMap.SimpleEntry;
-
-// import java.lang.Integer;
 import java.lang.String;
 
-// import org.jopendocument.dom.OOUtils; 
-// import org.jopendocument.dom.spreadsheet.Sheet; 
-// import org.jopendocument.dom.spreadsheet.SpreadSheet; 
-
-// import com.deeplearning.app.AnnotationPair;
-import com.deeplearning.app.WalkFolder;
 
 public class WalkFolderIdentificator {
-	private final String currentDirectory;
+    private final String currentDirectory;
 
 	public WalkFolderIdentificator(String currentDirectory){
 		this.currentDirectory = currentDirectory;
@@ -39,18 +22,36 @@ public class WalkFolderIdentificator {
 	// +dev: change to proper name it opens resutl file: 
 	// +dev: handle error when empty.		
 	public Map<String,WalkFolder> identify(){
-		Map<String, WalkFolder> walkFolders = new HashMap<>();	
-		System.out.println("--->> walkFolders.size() = " + walkFolders.size());
+		Map<String, WalkFolder> walkFoldersNamePaired = new HashMap<>();
+		WalkFolderFactory walkFolderFactory = new WalkFolderFactory();
+		System.out.println("--->> walkFolders.size() = " + walkFoldersNamePaired.size());
 		for(String folder: findFoldersInDirectory(this.currentDirectory)) {
 			System.out.println("--->> folder: " + folder);
-			WalkFolder walkFolder = new WalkFolder(folder);
-			if(walkFolder.hasLegFiles()){
-				walkFolders.put(folder, walkFolder);
+			String walkFolderType = this.getWalkFolderType(folder);
+			List<String> legFiles = this.findLegFilesInDirectory(folder);
+			List<WalkFolder> walkFolders = walkFolderFactory.getWalkFolder(walkFolderType,legFiles);
+			if(walkFolderType != null){
+                for (WalkFolder wf: walkFolders) {
+                    walkFoldersNamePaired.put(wf.getIdentifier(), wf);
+                }
+
 			}
 		}
 
-		return walkFolders;
+		return walkFoldersNamePaired;
 	}
+	private String getWalkFolderType(String folder){
+	    String walkFolderType = null;
+        List<String> legFilesList = this.findLegFilesInDirectory(folder);
+        if (legFilesList.size() == 2){
+            walkFolderType = WalkFolderFactory.TYPE_SIMPLE_WALK_FOLDER;
+        } else if (legFilesList.size() > 2){
+            walkFolderType = WalkFolderFactory.TYPE_MANY_WALK_FOLDER;
+        } else {
+            walkFolderType = null;
+        }
+	    return walkFolderType;
+    }
 
 	private List<String> findFoldersInDirectory(String directoryPath) {
     	File directory = new File(directoryPath);
@@ -68,4 +69,25 @@ public class WalkFolderIdentificator {
     	}
     	return foldersInDirectory;
 	}
+
+    private List<String> findLegFilesInDirectory(String directoryPath) {
+        File directory = new File(directoryPath);
+
+        FileFilter legFileFilter = new FileFilter() {
+            public boolean accept(File file) {
+                if (file.isDirectory()) {
+                    return false;
+                } else {
+                    return file.getName().endsWith("left.csv") || file.getName().endsWith("right.csv");
+                }
+            }
+        };
+
+        File[] legFiles = directory.listFiles(legFileFilter);
+        List<String> legFilesInDirectory = new ArrayList<String>(legFiles.length);
+        for (File legFile : legFiles) {
+            legFilesInDirectory.add(legFile.getAbsolutePath());
+        }
+        return legFilesInDirectory;
+    }
 }
