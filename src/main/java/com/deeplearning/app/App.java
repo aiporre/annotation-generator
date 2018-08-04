@@ -9,8 +9,11 @@ public class App
     public static void main( String[] args )
     {
         System.out.println( "Creating annotations!" );
-        
- 		AnnotationGen annotationGen = new AnnotationGen();       
+        ArgumentsParser arguments = new ArgumentsParser();
+        arguments.parseArgs(args);
+        String annotationsPath = arguments.manualAnnotationPath;
+        String outputFileName = arguments.outputFileName;
+        AnnotationGen annotationGen = new AnnotationGen(outputFileName,annotationsPath);
  		annotationGen.generateAnnotationFile();
  		annotationGen.displayFile();
 

@@ -14,10 +14,10 @@ import java.lang.String;
 
 
 public class WalkFolderIdentificator {
-    private final String currentDirectory;
+    private final String walkFoldersDirectory;
 
-	public WalkFolderIdentificator(String currentDirectory){
-		this.currentDirectory = currentDirectory;
+	public WalkFolderIdentificator(String walkFoldersDirectory){
+		this.walkFoldersDirectory = walkFoldersDirectory;
 	}
 	// +dev: change to proper name it opens resutl file: 
 	// +dev: handle error when empty.		
@@ -25,7 +25,7 @@ public class WalkFolderIdentificator {
 		Map<String, WalkFolder> walkFoldersNamePaired = new HashMap<>();
 		WalkFolderFactory walkFolderFactory = new WalkFolderFactory();
 		System.out.println("--->> walkFolders.size() = " + walkFoldersNamePaired.size());
-		for(String folder: findFoldersInDirectory(this.currentDirectory)) {
+		for(String folder: findFoldersInDirectory(this.walkFoldersDirectory)) {
 			System.out.println("--->> folder: " + folder);
 			String walkFolderType = this.getWalkFolderType(folder);
 			List<String> legFiles = this.findLegFilesInDirectory(folder);
@@ -65,15 +65,15 @@ public class WalkFolderIdentificator {
     	File[] directoryListAsFile = directory.listFiles(directoryFileFilter);
     	List<String> foldersInDirectory = new ArrayList<String>(directoryListAsFile.length);
     	for (File directoryAsFile : directoryListAsFile) {
-        	foldersInDirectory.add(directoryAsFile.getName());
+        	foldersInDirectory.add(directoryAsFile.getAbsolutePath());
     	}
     	return foldersInDirectory;
 	}
 
     private List<String> findLegFilesInDirectory(String directoryPath) {
-        File directory = new File(directoryPath);
-
-        FileFilter legFileFilter = new FileFilter() {
+		List<String> legFilesInDirectory = new ArrayList<>();
+		File directory = new File(directoryPath);
+		FileFilter legFileFilter = new FileFilter() {
             public boolean accept(File file) {
                 if (file.isDirectory()) {
                     return false;
@@ -83,11 +83,13 @@ public class WalkFolderIdentificator {
             }
         };
 
-        File[] legFiles = directory.listFiles(legFileFilter);
-        List<String> legFilesInDirectory = new ArrayList<String>(legFiles.length);
-        for (File legFile : legFiles) {
-            legFilesInDirectory.add(legFile.getAbsolutePath());
-        }
+		File[] legFiles = directory.listFiles(legFileFilter);
+
+		if(legFiles != null){
+			for (File legFile : legFiles) {
+				legFilesInDirectory.add(legFile.getAbsolutePath());
+			}
+		}
         return legFilesInDirectory;
     }
 }

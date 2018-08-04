@@ -28,10 +28,11 @@ import org.jopendocument.dom.spreadsheet.SpreadSheet;
 
 public class AnnotationGen {
 	private final File file;
+	private final String annotationsPath;
 
-	public AnnotationGen(){
-		// ++dev: hard code name of walk folder object
-		this.file = new File("annotations.ods");
+	public AnnotationGen(String outputFileName, String annotationsPath){
+		this.file = new File(outputFileName);
+		this.annotationsPath = annotationsPath;
 	}
 	// +dev: change to proper name it opens resutl file: 
 	// +dev: handle error when empty.		
@@ -50,7 +51,7 @@ public class AnnotationGen {
 		    // Save the data to an ODS file and open it.
 //			TableModel model ;
 			System.out.println("----> identifying the walk folders...");
-			WalkFolderIdentificator identificator = new WalkFolderIdentificator("./");
+			WalkFolderIdentificator identificator = new WalkFolderIdentificator(annotationsPath);
             Map<String, WalkFolder> walkFoldersMap = identificator.identify();
 
 
@@ -60,7 +61,14 @@ public class AnnotationGen {
             	System.out.println("---> k: folder " + walkFolderId);
 				// for each walkfolder get coordinates vs values (example {'A10','ON_THE_GROUND';...}
             	WalkFolder walkFolder = walkFoldersMap.get(walkFolderId);
-            	Map<String, String> coodinatesMap = walkFolder.readAsCoordinatesMap();
+                Map<String, String> coodinatesMap;
+            	try {
+                     coodinatesMap = walkFolder.readAsCoordinatesMap();
+                } catch (ArrayIndexOutOfBoundsException e){
+            	    System.out.println("!!!! ----> Error while processing walkfolder : " + walkFolder.getIdentifier());
+            	    e.printStackTrace();
+            	    continue;
+                }
 
             	// add new sheet with the walk folder identificator.
             	final Sheet sheet = spreadSheet.addSheet(walkFolderId);
