@@ -34,6 +34,7 @@ public class AnnotationGen {
 	private final File file;
 
 	public AnnotationGen(){
+		// ++dev: hard code name of walk folder object
 		this.file = new File("annotations.ods");
 	}
 	// +dev: change to proper name it opens resutl file: 
@@ -46,9 +47,8 @@ public class AnnotationGen {
 		}
 	}
 
-	public void generateFile(){
+	public void generateAnnotationFile(){
 		try{
-			// ++dev: hard code name of walk folder object	
 			// WalkFolder walkFolder = new WalkFolder("template");
 			// TableModel model =  walkFolder.readAsSheetModel();
 		    // Save the data to an ODS file and open it.
@@ -60,16 +60,22 @@ public class AnnotationGen {
 
             SpreadSheet spreadSheet = generateEmptySpreadsheet();
 
-            for(String k: walkFoldersMap.keySet()){
-            	System.out.println("---> k: folder " + k);
-
-            	WalkFolder walkFolder = walkFoldersMap.get(k);
+            for(String walkFolderId: walkFoldersMap.keySet()){
+            	System.out.println("---> k: folder " + walkFolderId);
+				// for each walkfolder get coordinates vs values (example {'A10','ON_THE_GROUND';...}
+            	WalkFolder walkFolder = walkFoldersMap.get(walkFolderId);
             	Map<String, String> coodinatesMap = walkFolder.readAsCoordinatesMap();
-            	final Sheet sheet = spreadSheet.addSheet(k);
+
+            	// add new sheet with the walk folder identificator.
+            	final Sheet sheet = spreadSheet.addSheet(walkFolderId);
+
+            	// allocate fields in the sheet
             	sheet.setRowCount(walkFolder.sampleNumber()+1);
             	sheet.setColumnCount(3);
+
             	for(String coordinate: coodinatesMap.keySet()){
             		System.out.println("============>>>>>>>>>>>>  coordinate:" + coordinate);
+            		// parse the coordinate into x and y (example A2 ===> x =0 y = 1)
             		int x = 0;
             		int y = 0;
             		if(coordinate.startsWith("A")){
@@ -84,8 +90,10 @@ public class AnnotationGen {
             		}
             		y = Integer.parseInt(coordinate.substring(1))-1;
 
+            		// add new vaule to the sheet.
             		sheet.setValueAt(coodinatesMap.get(coordinate),x,y);
             	}
+            	// save and finish with the given walking folder.
             	sheet.getSpreadSheet().saveAs(this.file);
             }
             

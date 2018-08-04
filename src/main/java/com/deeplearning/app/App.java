@@ -1,8 +1,5 @@
 package com.deeplearning.app;
 
-import com.deeplearning.app.AnnotationGen;
-import com.deeplearning.app.LegFile;
-import com.deeplearning.app.WalkFolderIdentificator;
 /**
  * Hello world!
  *
@@ -14,7 +11,7 @@ public class App
         System.out.println( "Creating annotations!" );
         
  		AnnotationGen annotationGen = new AnnotationGen();       
- 		annotationGen.generateFile();
+ 		annotationGen.generateAnnotationFile();
  		annotationGen.displayFile();
 
         // LegFile  legFile = new LegFile("template/left.csv");
