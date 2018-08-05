@@ -9,6 +9,5 @@ com/deeplearning/app/App.class
 com/deeplearning/app/WalkFolderIdentificator$2.class
 com/deeplearning/app/WalkFolderIdentificator.class
 com/deeplearning/app/LegFile$CSVParser.class
-com/deeplearning/app/WalkFolderFactory$1.class
 com/deeplearning/app/ManyWalkFolder.class
 com/deeplearning/app/WalkFolderIdentificator$1.class

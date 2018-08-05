@@ -2,7 +2,9 @@
 package com.deeplearning.app;
 
 
-import java.io.File; 
+import org.apache.log4j.Logger;
+
+import java.io.File;
 import java.io.FileFilter;
 
 import java.util.List;
@@ -14,6 +16,8 @@ import java.lang.String;
 
 
 public class WalkFolderIdentificator {
+	final static Logger logger = Logger.getLogger(WalkFolderIdentificator.class);
+
     private final String walkFoldersDirectory;
 
 	public WalkFolderIdentificator(String walkFoldersDirectory){
@@ -24,20 +28,23 @@ public class WalkFolderIdentificator {
 	public Map<String,WalkFolder> identify(){
 		Map<String, WalkFolder> walkFoldersNamePaired = new HashMap<>();
 		WalkFolderFactory walkFolderFactory = new WalkFolderFactory();
-		System.out.println("--->> walkFolders.size() = " + walkFoldersNamePaired.size());
+
 		for(String folder: findFoldersInDirectory(this.walkFoldersDirectory)) {
-			System.out.println("--->> folder: " + folder);
+			logger.info("Identifying : " + folder);
 			String walkFolderType = this.getWalkFolderType(folder);
 			List<String> legFiles = this.findLegFilesInDirectory(folder);
 			List<WalkFolder> walkFolders = walkFolderFactory.getWalkFolder(walkFolderType,legFiles);
 			if(walkFolderType != null){
+			    int walkCounter = 0;
                 for (WalkFolder wf: walkFolders) {
+                    walkCounter ++;
                     walkFoldersNamePaired.put(wf.getIdentifier(), wf);
                 }
-
+                logger.info("Number of sequences found in folder: " +
+                        folder.substring(folder.lastIndexOf(File.separator)+1) + " is " + walkCounter + ".");
 			}
 		}
-
+        logger.info("Total number of walk sequences found: " + walkFoldersNamePaired.size());
 		return walkFoldersNamePaired;
 	}
 	private String getWalkFolderType(String folder){

@@ -1,8 +1,12 @@
 package com.deeplearning.app;
 
+import org.apache.log4j.Logger;
+
 import java.io.File;
 
 public class ArgumentsParser {
+    final static Logger logger = Logger.getLogger(ArgumentsParser.class);
+
     private static final String ANNOTATIONS_PATH = "--annotations-path";
     private static final String ANNOTATIONS_PATH_ABV = "-m";
     public static final String OUTPUT_ABV = "-o";

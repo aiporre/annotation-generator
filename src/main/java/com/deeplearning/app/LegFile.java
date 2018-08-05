@@ -15,9 +15,12 @@ import java.util.ArrayList;
 import java.lang.Integer;
 
 import com.deeplearning.app.AnnotationPair;
+import org.apache.log4j.Logger;
 
 
 public class LegFile {
+	final static Logger logger = Logger.getLogger(LegFile.class);
+
 	private String fileName;
 	public LegFile(String fileName){
 		this.fileName = fileName;
@@ -25,17 +28,17 @@ public class LegFile {
 
 	public String[] getColumnSeries() {
  			CSVParser parser = new CSVParser();
-			System.out.println("====>>> parsing..");
+			logger.debug("====>>> parsing..");
 			
 			List<AnnotationPair> annotationPairs = parser.parseCSVFile(this.fileName);
-			System.out.println("---> elements: " + annotationPairs);
-			annotationPairs.forEach((AnnotationPair e) -> System.out.println("====> lambda print e : " + e.getLeft()));
+			logger.debug("---> elements: " + annotationPairs);
+			annotationPairs.forEach((AnnotationPair e) -> logger.debug("====> lambda print e : " + e.getLeft()));
 
-			System.out.println("... generating Series");
+			logger.debug("... generating Series");
 			List<String> columnSeries = new ArrayList<String>();
 
 			int N = annotationPairs.get(annotationPairs.size() - 1).getRight();
-			System.out.println("++++++------> max value: " + N);
+			logger.debug("++++++------> max value: " + N);
 			int indexAnnotationPairs = 0;
 			AnnotationPair p = annotationPairs.get(indexAnnotationPairs); 
 			for(int i=0; i<N+1; i++){
@@ -88,12 +91,12 @@ public class LegFile {
 		
             try {
                 br = new BufferedReader(new FileReader(csvFileName));
-                System.out.println("======> line " + br);
+                logger.debug("======> line " + br);
                 while ((line = br.readLine()) != null) {
                     // use comma as separator
-                    System.out.println("======> line " + line);
+                    logger.debug("======> line " + line);
                     String[] country = line.split(cvsSplitBy);
-                    System.out.println(" The entry for the csv file is: " + country[0] + "," + country[1]);
+                    logger.debug(" The entry for the csv file is: " + country[0] + "," + country[1]);
                     AnnotationPair pair = new AnnotationPair(country[0],Integer.parseInt(country[1]));
                     pairList.add(pair);
                 }

@@ -1,33 +1,24 @@
-
 package com.deeplearning.app;
 
+import java.io.File;
+import java.io.IOException;
 
-import java.io.File; 
 import javax.swing.table.TableModel;
 import javax.swing.table.DefaultTableModel;
 
-
-// import java.io.BufferedReader;
-// import java.io.FileNotFoundException;
-// import java.io.FileReader;
-// import java.io.IOException;
-
 import java.util.Map;
-import java.io.IOException;
-// import java.util.ArrayList;
-
-// import java.util.Map.Entry;
-// import java.util.AbstractMap.SimpleEntry;
 
 import java.lang.Integer;
 
-
-import org.jopendocument.dom.OOUtils; 
+import org.apache.log4j.Logger;
+import org.jopendocument.dom.OOUtils;
 import org.jopendocument.dom.spreadsheet.Sheet; 
 import org.jopendocument.dom.spreadsheet.SpreadSheet;
 
 public class AnnotationGen {
-	private final File file;
+    final static Logger logger = Logger.getLogger(AnnotationGen.class);
+
+    private final File file;
 	private final String annotationsPath;
 
 	public AnnotationGen(String outputFileName, String annotationsPath){
@@ -50,35 +41,34 @@ public class AnnotationGen {
 			// TableModel model =  walkFolder.readAsSheetModel();
 		    // Save the data to an ODS file and open it.
 //			TableModel model ;
-			System.out.println("----> identifying the walk folders...");
-			WalkFolderIdentificator identificator = new WalkFolderIdentificator(annotationsPath);
+			logger.info("---> identifying the walk folders at: " +  this.annotationsPath);
+			WalkFolderIdentificator identificator = new WalkFolderIdentificator(this.annotationsPath);
             Map<String, WalkFolder> walkFoldersMap = identificator.identify();
-
+            logger.info("---> Folders found: " + walkFoldersMap.toString());
 
             SpreadSheet spreadSheet = generateEmptySpreadsheet();
 
             for(String walkFolderId: walkFoldersMap.keySet()){
-            	System.out.println("---> k: folder " + walkFolderId);
+            	logger.info("---> processing folder: " + walkFolderId);
 				// for each walkfolder get coordinates vs values (example {'A10','ON_THE_GROUND';...}
             	WalkFolder walkFolder = walkFoldersMap.get(walkFolderId);
                 Map<String, String> coodinatesMap;
             	try {
                      coodinatesMap = walkFolder.readAsCoordinatesMap();
                 } catch (ArrayIndexOutOfBoundsException e){
-            	    System.out.println("!!!! ----> Error while processing walkfolder : " + walkFolder.getIdentifier());
-            	    e.printStackTrace();
+            	    logger.error("The left and right leg files contain errors. Sheet " + walkFolder.getIdentifier()+ " will be skip");
             	    continue;
                 }
+                logger.info("Coordinates were generated without problems.");
 
             	// add new sheet with the walk folder identificator.
             	final Sheet sheet = spreadSheet.addSheet(walkFolderId);
-
             	// allocate fields in the sheet
             	sheet.setRowCount(walkFolder.annotationsNumber()+1);
             	sheet.setColumnCount(3);
-
+                logger.info("Processing coordinates and placing table...");
             	for(String coordinate: coodinatesMap.keySet()){
-            		System.out.println("============>>>>>>>>>>>>  coordinate:" + coordinate);
+            		logger.debug("---> coordinate:" + coordinate + ", " + coodinatesMap.get(coordinate));
             		// parse the coordinate into x and y (example A2 ===> x =0 y = 1)
             		int x = 0;
             		int y = 0;
@@ -95,8 +85,10 @@ public class AnnotationGen {
             		y = Integer.parseInt(coordinate.substring(1))-1;
 
             		// add new vaule to the sheet.
+                    logger.debug("placing value at " + x + ", " + y + "." );
             		sheet.setValueAt(coodinatesMap.get(coordinate),x,y);
             	}
+            	logger.info("Sheet processed with out problems.");
             	// save and finish with the given walking folder.
             	sheet.getSpreadSheet().saveAs(this.file);
             }
