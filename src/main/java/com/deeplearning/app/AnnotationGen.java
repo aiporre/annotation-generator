@@ -18,33 +18,24 @@ import org.jopendocument.dom.spreadsheet.SpreadSheet;
 public class AnnotationGen {
     final static Logger logger = Logger.getLogger(AnnotationGen.class);
 
-    private final File file;
-	private final String annotationsPath;
+    private final File annotationsOutputFileODS;
 
-	public AnnotationGen(String outputFileName, String annotationsPath){
-		this.file = new File(outputFileName);
-		this.annotationsPath = annotationsPath;
+	public AnnotationGen(String outputFileName){
+		this.annotationsOutputFileODS = new File(outputFileName);
 	}
-	// +dev: change to proper name it opens resutl file: 
+	// +dev: change to proper name it opens resutl annotationsOutputFileODS:
 	// +dev: handle error when empty.		
 	public void displayFile(){
 		try{
-			OOUtils.open(file);
+			OOUtils.open(this.annotationsOutputFileODS);
 		} catch(Exception e){ 
 			e.printStackTrace();		
 		}
 	}
 
-	public void generateAnnotationFile(){
+	public void generateAnnotationFile(Map<String,WalkFolder> walkFoldersMap){
+
 		try{
-			// WalkFolder walkFolder = new WalkFolder("template");
-			// TableModel model =  walkFolder.readAsSheetModel();
-		    // Save the data to an ODS file and open it.
-//			TableModel model ;
-			logger.info("---> identifying the walk folders at: " +  this.annotationsPath);
-			WalkFolderIdentificator identificator = new WalkFolderIdentificator(this.annotationsPath);
-            Map<String, WalkFolder> walkFoldersMap = identificator.identify();
-            logger.info("---> Folders found: " + walkFoldersMap.toString());
 
             SpreadSheet spreadSheet = generateEmptySpreadsheet();
 
@@ -56,6 +47,7 @@ public class AnnotationGen {
             	try {
                      coodinatesMap = walkFolder.readAsCoordinatesMap();
                 } catch (ArrayIndexOutOfBoundsException e){
+            		e.printStackTrace();
             	    logger.error("The left and right leg files contain errors. Sheet " + walkFolder.getIdentifier()+ " will be skip");
             	    continue;
                 }
@@ -90,9 +82,9 @@ public class AnnotationGen {
             	}
             	logger.info("Sheet processed with out problems.");
             	// save and finish with the given walking folder.
-            	sheet.getSpreadSheet().saveAs(this.file);
+            	sheet.getSpreadSheet().saveAs(this.annotationsOutputFileODS);
             }
-            
+            logger.info("Annotations saved in the file: " + this.annotationsOutputFileODS);
 		} catch(Exception e){ 
 			e.printStackTrace();		
 		}
@@ -104,7 +96,7 @@ public class AnnotationGen {
         String[] columns = new String[] {"ON_GROUND", "IN_THE_AIR", "NOT_IN_FRAME"};
      	TableModel model = new DefaultTableModel(data, columns);  
        
-     	// Save the data to an ODS file and open it.
+     	// Save the data to an ODS annotationsOutputFileODS and open it.
      	SpreadSheet emptySpreadSheet =  SpreadSheet.createEmpty(model);
      	return emptySpreadSheet;
 	}

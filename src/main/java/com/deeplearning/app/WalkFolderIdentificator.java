@@ -25,8 +25,9 @@ public class WalkFolderIdentificator {
 	}
 	// +dev: change to proper name it opens resutl file: 
 	// +dev: handle error when empty.		
-	public Map<String,WalkFolder> identify(){
-		Map<String, WalkFolder> walkFoldersNamePaired = new HashMap<>();
+	public Map<String,List<WalkFolder>> identify(){
+        logger.info("---> identifying the walk folders at: " +  this.walkFoldersDirectory);
+		Map<String, List<WalkFolder>> forlderWalkFoldersMap = new HashMap<>();
 		WalkFolderFactory walkFolderFactory = new WalkFolderFactory();
 
 		for(String folder: findFoldersInDirectory(this.walkFoldersDirectory)) {
@@ -35,17 +36,14 @@ public class WalkFolderIdentificator {
 			List<String> legFiles = this.findLegFilesInDirectory(folder);
 			List<WalkFolder> walkFolders = walkFolderFactory.getWalkFolder(walkFolderType,legFiles);
 			if(walkFolderType != null){
-			    int walkCounter = 0;
-                for (WalkFolder wf: walkFolders) {
-                    walkCounter ++;
-                    walkFoldersNamePaired.put(wf.getIdentifier(), wf);
-                }
+			    int walkCounter = walkFolders.size();
+                forlderWalkFoldersMap.put(folder,walkFolders);
                 logger.info("Number of sequences found in folder: " +
                         folder.substring(folder.lastIndexOf(File.separator)+1) + " is " + walkCounter + ".");
 			}
 		}
-        logger.info("Total number of walk sequences found: " + walkFoldersNamePaired.size());
-		return walkFoldersNamePaired;
+        logger.info("Total number of walk sequences found: " + forlderWalkFoldersMap.size());
+		return forlderWalkFoldersMap;
 	}
 	private String getWalkFolderType(String folder){
 	    String walkFolderType = null;
