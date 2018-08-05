@@ -26,7 +26,6 @@ public class App
         logger.info("==================================================================");
         logger.info("==================================================================");
         String annotationsPath = arguments.manualAnnotationPath;
-//        String outputFileName = arguments.outputFileName;
 
 
         WalkFolderIdentificator identificator = new WalkFolderIdentificator(annotationsPath);
