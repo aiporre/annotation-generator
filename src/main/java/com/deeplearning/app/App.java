@@ -31,7 +31,13 @@ public class App
         WalkFolderIdentificator identificator = new WalkFolderIdentificator(annotationsPath);
         Map<String, List<WalkFolder>> forlderWalkFoldersMap  = identificator.identify();
         for (String folder: forlderWalkFoldersMap.keySet()) {
-            String outputFileName = folder + File.separator +(new File(folder).getName()) + "-manual.ods";
+            String outputFolder = folder;
+            // Change folder if an output folder was specified.
+            if (! "./".equals(arguments.outputPath)){
+                String[] parts = folder.split(File.separator);
+                outputFolder = arguments.outputPath + File.separator + parts[parts.length-2] + File.separator + parts[parts.length-1];
+            }
+            String outputFileName = outputFolder + File.separator +(new File(folder).getName()) + "-manual.ods";
 
             Map<String, WalkFolder> walkFoldersMap = new HashMap<>();
             for (WalkFolder wf :forlderWalkFoldersMap.get(folder)){
