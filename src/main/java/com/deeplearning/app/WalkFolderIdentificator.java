@@ -29,22 +29,30 @@ public class WalkFolderIdentificator {
         logger.info("---> identifying the walk folders at: " +  this.walkFoldersDirectory);
 		Map<String, List<WalkFolder>> forlderWalkFoldersMap = new HashMap<>();
 		WalkFolderFactory walkFolderFactory = new WalkFolderFactory();
-
-		for(String folder: findFoldersInDirectory(this.walkFoldersDirectory)) {
-			logger.info("Identifying : " + folder);
-			String walkFolderType = this.getWalkFolderType(folder);
-			List<String> legFiles = this.findLegFilesInDirectory(folder);
-			List<WalkFolder> walkFolders = walkFolderFactory.getWalkFolder(walkFolderType,legFiles);
-			if(walkFolderType != null){
-			    int walkCounter = walkFolders.size();
-                forlderWalkFoldersMap.put(folder,walkFolders);
-                logger.info("Number of sequences found in folder: " +
-                        folder.substring(folder.lastIndexOf(File.separator)+1) + " is " + walkCounter + ".");
+		if (verifyWalkFoldersDirectoryExist()){
+			for(String folder: findFoldersInDirectory(this.walkFoldersDirectory)) {
+				logger.info("Identifying : " + folder);
+				String walkFolderType = this.getWalkFolderType(folder);
+				List<String> legFiles = this.findLegFilesInDirectory(folder);
+				List<WalkFolder> walkFolders = walkFolderFactory.getWalkFolder(walkFolderType,legFiles);
+				if(walkFolderType != null){
+					int walkCounter = walkFolders.size();
+					forlderWalkFoldersMap.put(folder,walkFolders);
+					logger.info("Number of sequences found in folder: " +
+							folder.substring(folder.lastIndexOf(File.separator)+1) + " is " + walkCounter + ".");
+				}
 			}
+		} else{
+			logger.error("impossible to identify any walkfolder. Folder: " + this.walkFoldersDirectory + " don't exist.");
 		}
         logger.info("Total number of walk sequences found: " + forlderWalkFoldersMap.size());
 		return forlderWalkFoldersMap;
 	}
+
+	private boolean verifyWalkFoldersDirectoryExist() {
+		return new File(this.walkFoldersDirectory).exists();
+	}
+
 	private String getWalkFolderType(String folder){
 	    String walkFolderType = null;
         List<String> legFilesList = this.findLegFilesInDirectory(folder);
