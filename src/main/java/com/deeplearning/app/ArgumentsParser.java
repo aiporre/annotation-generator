@@ -12,12 +12,14 @@ public class ArgumentsParser {
 
     public String outputFileName;
     public String manualAnnotationPath;
+    public boolean verbose;
 
 
     public ArgumentsParser(){
         // set default values
         this.manualAnnotationPath = "./";
         this.outputFileName = "annotations.ods";
+        this.verbose = false;
     }
 
     public void parseArgs(String[] args){
@@ -29,6 +31,7 @@ public class ArgumentsParser {
                 System.out.println("  -h,--help               print command help");
                 System.out.println("  " + ANNOTATIONS_PATH_ABV +"," + ANNOTATIONS_PATH + "   path to look for the " +
                         "annotations (Default ./)");
+                System.out.println("  -v,--verbose            open ODS files at the end");
                 System.exit(0);
             }
             if(arg.equals(ANNOTATIONS_PATH) || arg.equals(ANNOTATIONS_PATH_ABV)){
@@ -37,6 +40,10 @@ public class ArgumentsParser {
                     annotationsPath = System.getProperty("user.home") + annotationsPath.substring(1);
                 }
                 this.manualAnnotationPath = annotationsPath;
+            }
+
+            if(arg.equals("--verbose") || arg.equals("--v")){
+                this.verbose = true;
             }
         }
     }

@@ -39,7 +39,9 @@ public class App
             }
             AnnotationGen annotationGen = new AnnotationGen(outputFileName);
             annotationGen.generateAnnotationFile(walkFoldersMap);
-            annotationGen.displayFile();
+            if(arguments.verbose){
+                annotationGen.displayFile();
+            }
         }
 
  		logger.info( "End!" );
