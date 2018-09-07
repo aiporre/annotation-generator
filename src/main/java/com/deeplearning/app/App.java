@@ -37,7 +37,7 @@ public class App
                 String[] parts = folder.split(File.separator);
                 outputFolder = arguments.outputPath + File.separator + parts[parts.length-2] + File.separator + parts[parts.length-1];
             }
-            String outputFileName = outputFolder + File.separator +(new File(folder).getName()) + "-manual.ods";
+            String outputFileName = outputFolder + File.separator +(new File(folder).getName()) + "-semiautomatic.ods";
 
             Map<String, WalkFolder> walkFoldersMap = new HashMap<>();
             for (WalkFolder wf :forlderWalkFoldersMap.get(folder)){
