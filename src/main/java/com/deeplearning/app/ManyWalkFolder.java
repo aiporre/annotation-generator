@@ -6,6 +6,8 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.lang.Integer.min;
+
 public class ManyWalkFolder implements WalkFolder {
     // private String folderName;
     private LegFile  legFileLeft;
@@ -62,7 +64,7 @@ public class ManyWalkFolder implements WalkFolder {
 
         String[] serieLeft = this.legFileLeft.getColumnSeries();
         String[] serieRight = this.legFileRight.getColumnSeries();
-        int N = serieLeft.length;
+        int N = min(serieLeft.length,serieLeft.length);
 
         HashMap<String, String> coodinatesMap = new HashMap<String, String>();
         coodinatesMap.put("A1", "frame_id");
