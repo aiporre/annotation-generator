@@ -25,8 +25,8 @@ public class App
         logger.info("");
         logger.info("==================================================================");
         logger.info("==================================================================");
-        String annotationsPath = arguments.manualAnnotationPath;
-
+        String annotationsPath = arguments.semiautomaticAnnotationsPath;
+        String person = (new File(annotationsPath).getName());
 
         WalkFolderIdentificator identificator = new WalkFolderIdentificator(annotationsPath);
         Map<String, List<WalkFolder>> forlderWalkFoldersMap  = identificator.identify();
@@ -37,7 +37,7 @@ public class App
                 String[] parts = folder.split(File.separator);
                 outputFolder = arguments.outputPath + File.separator + parts[parts.length-2] + File.separator + parts[parts.length-1];
             }
-            String outputFileName = outputFolder + File.separator +(new File(folder).getName()) + "-semiautomatic.ods";
+            String outputFileName = outputFolder + File.separator + person + "-" +(new File(folder).getName()) + "-semiautomatic.ods";
 
             Map<String, WalkFolder> walkFoldersMap = new HashMap<>();
             for (WalkFolder wf :forlderWalkFoldersMap.get(folder)){

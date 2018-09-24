@@ -14,7 +14,7 @@ public class ManyWalkFolder implements WalkFolder {
 
     public ManyWalkFolder(String leftFileName, String rightFileName) {
         String[] fileName = leftFileName.substring(leftFileName.lastIndexOf(File.separator)+1).split("-");
-        this.identifier = fileName[0] + "-" + fileName[1] + "-manual-" + fileName[2];
+        this.identifier = fileName[0] + "-" + fileName[1] + "-"  + fileName[2];
         this.legFileLeft = new LegFile(leftFileName);
         this.legFileRight = new LegFile(rightFileName);
     }

@@ -14,14 +14,14 @@ public class ArgumentsParser {
 
 
     public String outputFileName;
-    public String manualAnnotationPath;
+    public String semiautomaticAnnotationsPath;
     public String outputPath;
     public boolean verbose;
 
 
     public ArgumentsParser(){
         // set default values
-        this.manualAnnotationPath = "./";
+        this.semiautomaticAnnotationsPath = "./";
         this.outputPath = "./";
         this.outputFileName = "annotations.ods";
         this.verbose = false;
@@ -46,7 +46,7 @@ public class ArgumentsParser {
                 if (annotationsPath.startsWith("~" + File.separator)) {
                     annotationsPath = System.getProperty("user.home") + annotationsPath.substring(1);
                 }
-                this.manualAnnotationPath = annotationsPath;
+                this.semiautomaticAnnotationsPath = annotationsPath;
             }
 
             if(arg.equals(OUTPUT_PATH) || arg.equals(OUTPUT_PATH_ABV)){
