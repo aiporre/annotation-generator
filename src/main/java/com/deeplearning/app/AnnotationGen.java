@@ -38,7 +38,7 @@ public class AnnotationGen {
 		try{
 
             SpreadSheet spreadSheet = generateEmptySpreadsheet();
-
+			boolean isCorruptedWalkfolder = false;
             for(String walkFolderId: walkFoldersMap.keySet()){
             	logger.info("---> processing folder: " + walkFolderId);
 				// for each walkfolder get coordinates vs values (example {'A10','ON_THE_GROUND';...}
@@ -49,6 +49,7 @@ public class AnnotationGen {
                 } catch (ArrayIndexOutOfBoundsException e){
             		e.printStackTrace();
             	    logger.error("The left and right leg files contain errors. Sheet " + walkFolder.getIdentifier()+ " will be skip");
+            	    isCorruptedWalkfolder = true;
             	    continue;
                 }
                 logger.info("Coordinates were generated without problems.");
@@ -82,10 +83,20 @@ public class AnnotationGen {
             	}
             	logger.info("Sheet processed with out problems.");
             	// save and finish with the given walking folder.
-            	sheet.getSpreadSheet().saveAs(this.annotationsOutputFileODS);
+				spreadSheet = sheet.getSpreadSheet();
             }
-            logger.info("Annotations saved in the file: " + this.annotationsOutputFileODS);
-		} catch(Exception e){ 
+            if(isCorruptedWalkfolder){
+				logger.error("Failed to process" + this.annotationsOutputFileODS + "." +
+						" Some of the annotations files csv contain errors");
+			} else {
+            	spreadSheet.saveAs(this.annotationsOutputFileODS);
+				logger.info("Annotations saved in the file: " + this.annotationsOutputFileODS);
+
+			}
+
+		} catch(Exception e){
+			logger.error("An error occurred during the generation of the file: " + this.annotationsOutputFileODS);
+			logger.error(e.getMessage());
 			e.printStackTrace();		
 		}
 	}
