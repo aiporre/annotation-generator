@@ -1,5 +1,7 @@
 package com.deeplearning.app;
 
+import org.apache.log4j.Logger;
+
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import java.io.File;
@@ -13,6 +15,7 @@ public class ManyWalkFolder implements WalkFolder {
     private LegFile  legFileLeft;
     private LegFile  legFileRight;
     private String identifier;
+    final static Logger logger = Logger.getLogger(AnnotationGen.class);
 
     public ManyWalkFolder(String leftFileName, String rightFileName) {
         String[] fileName = leftFileName.substring(leftFileName.lastIndexOf(File.separator)+1).split("-");
@@ -32,7 +35,7 @@ public class ManyWalkFolder implements WalkFolder {
         String[] serieLeft = this.legFileLeft.getColumnSeries();
         String[] serieRight = this.legFileRight.getColumnSeries();
 
-        System.out.println("============+>>> serie: " + serieLeft);
+//        System.out.println("============+>>> serie: " + serieLeft);
         // +dev: ensure N for right and left are equal
         int N = serieLeft.length;
 
@@ -64,8 +67,11 @@ public class ManyWalkFolder implements WalkFolder {
 
         String[] serieLeft = this.legFileLeft.getColumnSeries();
         String[] serieRight = this.legFileRight.getColumnSeries();
-        int N = min(serieLeft.length,serieLeft.length);
 
+        int N = min(serieLeft.length,serieRight.length);
+        if (serieLeft.length != serieRight.length) {
+            logger.error("Something could be wrong with annotations files csv. Don't end in the same frame.");
+        }
         HashMap<String, String> coodinatesMap = new HashMap<String, String>();
         coodinatesMap.put("A1", "frame_id");
         coodinatesMap.put("B1", "left_foot");
